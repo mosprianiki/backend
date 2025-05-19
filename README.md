@@ -97,5 +97,3 @@ BACKEND__DB__HOST=localhost
   # prod
   fastapi run main.py
   ```
-
-DEV_ENV, PROD_ENV, SSH_KEY, SSH_HOST, SSH_USER, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
