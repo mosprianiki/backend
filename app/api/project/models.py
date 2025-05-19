@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.api.project.enums import Approach
+from app.core.config import StaticConfig
 from app.core.db import BaseModel
 
 
@@ -9,7 +10,10 @@ class Projects(BaseModel):
     __tablename__ = "projects"
 
     project_id: Mapped[int] = mapped_column(primary_key=True)
-    project_name: Mapped[str] = mapped_column(String(100), unique=True)
+    project_name: Mapped[str] = mapped_column(
+        String(StaticConfig.NAME_STR_LENGTH),
+        unique=True,
+    )
 
     input_data = relationship(back_populates="projects")
     output_data = relationship(back_populates="projects")
