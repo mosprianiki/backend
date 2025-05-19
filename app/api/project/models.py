@@ -7,10 +7,11 @@ Base = declarative_base()
 class Projects(Base):
     __tablename__ = 'projects'
 
-    project_id = Column(Integer, primary_key=True)
+    project_id = Mapped[int] = mapped_column(primary_key=True)
     project_name = Column(String(100), unique=True, nullable=False)
 
     input_data = relationship("InputData", back_populates="projects")
+    output_data = relationship("OutputData", back_populates="projects")
 
 
 class InputData(Base):
@@ -28,10 +29,15 @@ class InputData(Base):
     projects = relationship("Projects", back_populates="input_data")
 
 class OutbutData(Base):
-    output_id = Column(Integer, primary_key=True)
-    cycle_north_south = Column(Integer, nullable=False)
-    green_main_north_south = Column(Integer, nullable=False)
-    lost_time_north_south = Column(Integer, nullable=False)
-    cycle_east_west = Column(Integer, nullable=False)
-    green_main_east_west = Column(Integer, nullable=False)
-    lost_time_east_west = Column(Integer, nullable=False)
+    __tablename__ = 'output_data'
+
+    output_id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey('projects.project_id'))
+    cycle_north_south: Mapped[int]
+    green_main_north_south: Mapped[int]
+    lost_time_north_south: Mapped[int]
+    cycle_east_west: Mapped[int]
+    green_main_east_west: Mapped[int]
+    lost_time_east_west: Mapped[int]
+
+    projects = relationship("Projects", back_populates="output_data")
