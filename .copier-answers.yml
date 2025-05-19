@@ -1,0 +1,11 @@
+_commit: b522f19
+_src_path: .
+domain_name: mospolytime.ru
+git_repository_url: ''
+is_ai_needed: false
+is_rabbitmq_needed: false
+is_redis_needed: false
+is_s3_needed: false
+project_name: zit
+project_slug: zit
+project_slug_with_dashes: zit
