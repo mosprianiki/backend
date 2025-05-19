@@ -167,11 +167,11 @@ jobs:
           if [[ "${GITHUB_REF##*/}" == "main" ]]; then
             echo "env=prod" >> $GITHUB_OUTPUT
             echo "container=zit-backend-prod" >> $GITHUB_OUTPUT
-            echo "network=network-prod" >> $GITHUB_OUTPUT
+            echo "network=prod-network" >> $GITHUB_OUTPUT
           else
             echo "env=dev" >> $GITHUB_OUTPUT
             echo "container=zit-backend-dev" >> $GITHUB_OUTPUT
-            echo "network=network-dev" >> $GITHUB_OUTPUT
+            echo "network=dev-network" >> $GITHUB_OUTPUT
           fi
 
       - name: Remote deploy
