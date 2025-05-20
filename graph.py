@@ -3,26 +3,23 @@ from collections import defaultdict
 import networkx as nx
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
+class Edge:
+    def init(self, speed, length, priority):
+        self.speed = speed
+        self.length = length
+        self.priority = priority
+        self.time = self.length / (self.speed * 1000 / 3600)  # Время в секундах
+        self.weight = 1 / self.time if self.time > 0 else 0
 
 
 @dataclass
 class DataSets:
     stri: list[str]
     inut: list[str]
-    paths: list[tuple[list[str], list[float]]] | None= None
-
-
-class Edge:
-    def __init__(self, speed, length, priority):
-        self.speed = speed
-        self.length = length
-        self.priority = priority
-        self.time = self.length / (self.speed * 1000 / 3600)
-        self.weight = 1 / self.time if self.time > 0 else 0
 
 
 class Graph:
-    def __init__(self):
+    def init(self):
         self.graph = defaultdict(dict)
         self.all_edges = []
         self.node_connections = defaultdict(list)
@@ -57,7 +54,7 @@ class Graph:
                 edge = self.graph[current_node][neighbor]
                 if (current_node, neighbor) not in used_edges and neighbor not in current_path:
                     used_edges.add((current_node, neighbor))
-                    explore_path(neighbor,
+                    explore_path(neighbor, 
                                current_path + [neighbor],
                                current_times + [edge.time],
                                current_weight + edge.weight)
@@ -67,7 +64,7 @@ class Graph:
         return best_path, best_times
 
     def build_sequential_paths(self):
-        """Строит последовательность путей и возвращает объект DataSets"""
+        """Строит последовательность путей с временем для каждого участка"""
         sorted_edges = sorted(self.all_edges, key=lambda x: x[2].priority, reverse=True)
         used_edges = set()
         sequential_paths = []
@@ -87,7 +84,7 @@ class Graph:
             if not found_path:
                 break
 
-        return DataSets(stri=[], inut=[], paths=sequential_paths)
+        return sequential_paths
 
     @classmethod
     def from_csv(cls, filename):
@@ -101,8 +98,10 @@ class Graph:
     def print_paths(self, paths):
         """Выводит маршруты в заданном формате"""
         for i, (path, times) in enumerate(paths, 1):
-            print(path)
-            print(times,"\n")
+            path_str = " -> ".join(path)
+            time_str = " + ".join(f"{t:.1f}s" for t in times)
+            print(f"Маршрут: {path_str}")
+            print(f"Время по участкам: {time_str}\n")
 
     def visualize_graph(self, paths=None):
         """Визуализирует граф с выделенными путями"""
@@ -111,24 +110,28 @@ class Graph:
             G.add_edge(u, v, weight=edge.time)
 
         pos = nx.spring_layout(G)
-
+        
         nx.draw_networkx_nodes(G, pos, node_size=700)
         nx.draw_networkx_edges(G, pos)
         nx.draw_networkx_labels(G, pos, font_size=10)
-
+        
         if paths:
             for path, _ in paths:
                 edges = [(path[i], path[i+1]) for i in range(len(path)-1)]
-                nx.draw_networkx_edges(G, pos, edgelist=edges,
-                                      edge_color="black", width=2)
+                nx.draw_networkx_edges(G, pos, edgelist=edges, 
+                                      edge_color="red", width=2)
 
-        plt.title("вот вам граф")
+        plt.title("Визуализация графа")
         plt.axis("off")
         plt.show()
 
+# Пример использования
 g = Graph.from_csv('svias.csv')
-data = g.build_sequential_paths()
+clic = DataSets 
+sequential_paths = g.build_sequential_paths()
 
-g.print_paths(data.paths)
+# Выводим результаты в нужном формате
+g.print_paths(sequential_paths)
 
-g.visualize_graph(data.paths)
+# Визуализация графа
+g.visualize_graph(sequential_paths)
